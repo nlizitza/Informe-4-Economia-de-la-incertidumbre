@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe N° 4 · Economía de la Incertidumbre 2026 · Dashboard</title>
+<style>
+:root{
+  color-scheme: light;
+  --plane:#f4f3ef; --surface:#fcfcfb; --raised:#ffffff;
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#7a7873;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10); --band:rgba(11,11,11,.035);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --o1:#86b6ef; --o2:#5598e7; --o3:#2a78d6; --o4:#1c5cab; --o5:#104281;
+  --bad:#b3261e; --good:#006300; --crit:#d03b3b;
+  --head:#13213a; --head-ink:#f4f3ef; --head-ink2:#b9c3d6; --accent:#eb6834;
+  --tt-bg:#0b0b0b; --tt-ink:#f0efec;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --plane:#0d0d0d; --surface:#1a1a19; --raised:#212120;
+    --ink:#f0efec; --ink2:#c3c2b7; --muted:#9a988f;
+    --grid:#2c2c2a; --axis:#45453f; --border:rgba(255,255,255,.10); --band:rgba(255,255,255,.04);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --o1:#184f95; --o2:#256abf; --o3:#3987e5; --o4:#6da7ec; --o5:#9ec5f4;
+    --bad:#ef7b74; --good:#0ca30c; --crit:#e66767;
+    --head:#101a2d; --head-ink:#f0efec; --head-ink2:#9fb0cc; --accent:#d95926;
+    --tt-bg:#f0efec; --tt-ink:#0b0b0b;
+  }
+}
+:root[data-theme="dark"]{
+    color-scheme: dark;
+    --plane:#0d0d0d; --surface:#1a1a19; --raised:#212120;
+    --ink:#f0efec; --ink2:#c3c2b7; --muted:#9a988f;
+    --grid:#2c2c2a; --axis:#45453f; --border:rgba(255,255,255,.10); --band:rgba(255,255,255,.04);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --o1:#184f95; --o2:#256abf; --o3:#3987e5; --o4:#6da7ec; --o5:#9ec5f4;
+    --bad:#ef7b74; --good:#0ca30c; --crit:#e66767;
+    --head:#101a2d; --head-ink:#f0efec; --head-ink2:#9fb0cc; --accent:#d95926;
+    --tt-bg:#f0efec; --tt-ink:#0b0b0b;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--plane);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+a{color:inherit}
+h1,h2,h3,h4{margin:0;line-height:1.2;letter-spacing:-.01em}
+p{margin:0 0 .8em}
+[hidden]{display:none!important}
+
+/* encabezado */
+header.top{background:var(--head);color:var(--head-ink);padding:40px 0 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;right:-80px;top:-120px;width:420px;height:420px;border-radius:50%;border:56px solid rgba(255,255,255,.04)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--head-ink2);font-weight:600;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.eyebrow .pill{background:var(--accent);color:#fff;border-radius:999px;padding:2px 10px;letter-spacing:.08em}
+header.top h1{font-size:clamp(26px,3.6vw,40px);font-weight:700;margin:14px 0 6px;max-width:900px}
+header.top .sub{font-size:clamp(17px,2vw,21px);color:var(--head-ink2);margin:0 0 18px;font-weight:500}
+.meta{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--head-ink2);align-items:center}
+.meta b{color:var(--head-ink);font-weight:600}
+
+/* navegación */
+nav.tabs{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--plane) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs .wrap::-webkit-scrollbar{display:none}
+nav.tabs a{text-decoration:none;padding:15px 14px 13px;font-size:14px;font-weight:600;color:var(--ink2);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+nav.tabs a .n{font-size:11px;color:var(--muted);font-weight:600;border:1px solid var(--border);border-radius:6px;padding:0 6px}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+#progress-track{height:2px;background:transparent}
+#progress{height:2px;background:var(--accent);width:0;transition:width .4s ease}
+
+main{padding:30px 0 40px}
+.sec-head{display:grid;grid-template-columns:1fr;gap:6px;margin:6px 0 22px}
+.sec-head .kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.sec-head h2{font-size:clamp(24px,3vw,32px);font-weight:700}
+.sec-head p{color:var(--ink2);max-width:820px;font-size:16px;margin:4px 0 0}
+
+/* tarjetas */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:0 0 18px;transition:box-shadow .3s}
+.card.flash{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 55%,transparent)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid2 > .card{margin:0}
+.grid-3-2{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:18px}
+.grid-3-2 > .card{margin:0}
+.stack18{display:flex;flex-direction:column;gap:18px;margin-bottom:18px}
+@media (max-width:860px){.grid2,.grid-3-2{grid-template-columns:1fr}}
+
+.chart-h{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px}
+.chart-h h3{font-size:16px;font-weight:650}
+.chart-h .sub{font-size:13px;color:var(--muted);margin-top:3px}
+.gnum{display:inline-block;font-size:11px;font-weight:700;color:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--plane);border:1px solid var(--border);border-radius:9px;padding:2px}
+.seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.tbtn{border:1px solid var(--border);background:transparent;color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer}
+.tbtn:hover,.seg button:hover{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2);margin:2px 0 6px;min-height:4px}
+.lg{display:inline-flex;align-items:center;gap:7px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;flex:none}
+.dash{display:inline-block;width:16px;border-top:2px dashed;flex:none}
+.plot{width:100%;min-height:40px}
+.plot svg{display:block;overflow:visible}
+.cap{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+.cap .approx{display:inline-block;background:var(--plane);border:1px solid var(--border);border-radius:6px;padding:0 6px;margin-right:6px;color:var(--ink2);font-weight:600}
+.find{font-size:14px;color:var(--ink2);margin:10px 0 0;padding-left:12px;border-left:3px solid var(--accent)}
+.find b{color:var(--ink)}
+
+/* svg */
+.tick{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.vlab{font-size:11.5px;fill:var(--ink2);font-weight:600}
+.annot{font-size:11px;fill:var(--ink2);font-style:italic}
+.reflab{font-size:11px;fill:var(--ink);font-weight:600}
+.rowlab{font-size:12.5px;fill:var(--ink2)}
+.hit{outline:none;cursor:crosshair}
+.hit.on{fill:var(--band)!important}
+.hit:focus-visible{stroke:var(--accent);stroke-width:2}
+
+/* tooltip */
+#tt{position:fixed;z-index:50;pointer-events:none;background:var(--tt-bg);color:var(--tt-ink);border-radius:10px;padding:9px 11px;font-size:12.5px;min-width:170px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.tt-t{font-weight:700;margin-bottom:5px}
+.tt-r{display:flex;align-items:center;gap:8px;margin:2px 0}
+.tt-n{flex:1;opacity:.85}
+.tt-v{font-weight:700;font-variant-numeric:tabular-nums}
+.tt-note{margin-top:6px;font-size:11px;opacity:.7}
+
+/* tablas */
+.tbl-wrap{overflow-x:auto}
+table.data{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+table.data th{text-align:right;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--axis);padding:7px 10px;white-space:nowrap}
+table.data th:first-child,table.data td:first-child{text-align:left}
+table.data th .sw{margin-right:6px;vertical-align:-1px}
+table.data td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--grid)}
+table.data tr.prom td{font-weight:700;border-top:1px solid var(--axis)}
+.cuadro .vcell{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.mini{position:relative;width:110px;height:10px;display:inline-block}
+.mini::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;border-left:1px solid var(--axis)}
+.mini-bar{position:absolute;top:1px;height:8px;background:var(--s1);border-radius:0 3px 3px 0}
+.mini-bar.neg{border-radius:3px 0 0 3px;background:var(--s2)}
+.neg-t{color:var(--bad);font-weight:600}
+
+/* KPI */
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;margin-bottom:18px}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
+.hero-fig{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px}
+.hero-fig .lbl{font-size:13px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em}
+.hero-fig .big{font-size:clamp(54px,8vw,84px);font-weight:750;letter-spacing:-.03em;line-height:1;margin:10px 0 6px}
+.hero-fig .big small{font-size:.38em;font-weight:650;letter-spacing:0;color:var(--ink2);margin-left:6px}
+.hero-fig p{color:var(--ink2);margin:8px 0 0;font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:3px}
+button.tile,a.tile{cursor:pointer;text-decoration:none;transition:transform .15s,border-color .15s}
+button.tile:hover,a.tile:hover{transform:translateY(-2px);border-color:var(--axis)}
+.tile .lbl{font-size:12.5px;color:var(--ink2);font-weight:600}
+.tile .val{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.tile .val small{font-size:14px;font-weight:600;color:var(--ink2);margin-left:3px}
+.tile .ctx{font-size:12px;color:var(--muted)}
+.tile .go{font-size:12px;color:var(--ink2);margin-top:4px;font-weight:600}
+.delta{font-size:12.5px;font-weight:650;display:inline-flex;gap:5px;align-items:center}
+.delta.bad{color:var(--bad)} .delta.good{color:var(--good)} .delta.flat{color:var(--ink2)}
+
+/* claves */
+.keys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
+@media (max-width:860px){.keys{grid-template-columns:1fr}}
+.key h3{font-size:17px;margin-bottom:10px}
+.key ul{margin:0;padding-left:18px;color:var(--ink2)}
+.key li{margin:0 0 7px}
+.key li b{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+button.chip{cursor:pointer;font-family:inherit}
+button.chip:hover{color:var(--ink);border-color:var(--axis)}
+.chip{font-size:12.5px;font-weight:600;border:1px solid var(--border);border-radius:999px;padding:4px 11px;background:var(--plane);color:var(--ink2)}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.route{grid-template-columns:1fr}}
+.route a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .15s}
+.route a:hover{border-color:var(--axis)}
+.route .k{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.1em}
+.route h4{font-size:16px;margin:4px 0}
+.route p{font-size:13.5px;color:var(--ink2);margin:0}
+
+/* segmentada / flujo */
+.flow{display:flex;flex-direction:column;gap:10px}
+.segbar{display:flex;gap:2px;height:28px;border-radius:4px;overflow:hidden;width:100%}
+.segbar > div{height:100%;display:flex;align-items:center;padding:0 10px;font-size:12.5px;font-weight:700;border-radius:4px;white-space:nowrap}
+.flow-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center;font-size:13px;color:var(--ink2)}
+.flow-row b{color:var(--ink)}
+@media (max-width:600px){.flow-row{grid-template-columns:1fr}}
+.eq{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--ink2);margin:4px 0 14px}
+.eq .n{font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.eq .op{font-size:22px;color:var(--muted);font-weight:600}
+.meter{height:10px;border-radius:999px;background:color-mix(in srgb,var(--s1) 18%,var(--surface));overflow:hidden;margin:10px 0 6px}
+.meter > span{display:block;height:100%;background:var(--s1);border-radius:999px}
+
+.note{background:var(--surface);border:1px dashed var(--axis);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--ink2)}
+.note b{color:var(--ink)}
+.next{display:flex;justify-content:space-between;gap:12px;margin-top:8px;flex-wrap:wrap}
+.next a{text-decoration:none;font-weight:650;font-size:14px;border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:10px 16px}
+.next a:hover{border-color:var(--axis)}
+.concl{font-size:16px;color:var(--ink2)}
+.concl b{color:var(--ink)}
+.quote{font-size:clamp(18px,2.2vw,22px);font-weight:600;line-height:1.4;color:var(--ink);border-left:4px solid var(--accent);padding:6px 0 6px 18px;margin:6px 0 18px}
+.idx td a{text-decoration:none;border-bottom:1px solid var(--axis)}
+footer{border-top:1px solid var(--border);padding:22px 0 36px;font-size:12.5px;color:var(--muted)}
+footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+@media (max-width:600px){.wrap{padding:0 16px}.card{padding:16px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow"><span class="pill">Informe N° 4</span> Serie Economía de la Incertidumbre 2026</div>
+    <h1>El estado del trabajo y la sociedad argentina a mediados de 2026</h1>
+    <p class="sub">Datos de una tragedia anunciada</p>
+    <div class="meta"><span><b>Noviembre 2026</b></span><span>Equipo CEC · Grupo Economía y Territorio</span><span>Período analizado: 4T 2023 – 1S/2T 2026</span></div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Secciones del informe">
+  <div class="wrap">
+    <a href="#resumen" data-sec="resumen">Resumen</a>
+    <a href="#trabajo" data-sec="trabajo"><span class="n">1</span>Trabajo</a>
+    <a href="#pobreza" data-sec="pobreza"><span class="n">2</span>Pobreza e indigencia</a>
+    <a href="#distribucion" data-sec="distribucion"><span class="n">3</span>Distribución del ingreso</a>
+    <a href="#conclusiones" data-sec="conclusiones"><span class="n">4</span>Conclusiones</a>
+    <a href="#notas" data-sec="notas">Notas y fuentes</a>
+  </div>
+  <div id="progress-track"><div id="progress"></div></div>
+</nav>
+
+<main class="wrap">
+
+<!-- ===================== RESUMEN ===================== -->
+<section id="sec-resumen">
+  <div class="sec-head">
+    <span class="kicker">Resumen ejecutivo</span>
+    <h2>Tres años de gobierno, tres campos en deterioro</h2>
+    <p>El informe reúne indicadores de <b>trabajo</b>, <b>pobreza</b> y <b>distribución del ingreso</b> desde el inicio del gobierno de Javier Milei (4T 2023), con foco en el primer semestre de 2026. Según sus autores, los datos anuncian “el fin del relato libertario”.</p>
+  </div>
+
+  <div class="hero">
+    <div class="hero-fig">
+      <div class="lbl">Empleo destruido desde el 4T 2023</div>
+      <div class="big"><span data-count="276" data-pre="−">−276</span><small>mil puestos</small></div>
+      <p>Al mismo tiempo, <b>241 mil personas más</b> salieron a buscar trabajo. Resultado: <b>517 mil nuevos desocupados</b>.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="chart-h"><div><h3>Más personas buscan trabajo, hay menos empleo</h3><div class="sub">Miles de personas · 4T 2023 → 2T 2026</div></div></div>
+      <div class="flow">
+        <div class="segbar" role="img" aria-label="517 mil nuevos desocupados: 241 mil nuevos en el mercado de trabajo más 276 mil empleos destruidos">
+          <div style="flex:241;background:var(--s1);color:#fff">241 mil</div>
+          <div style="flex:276;background:var(--s2);color:#fff">276 mil</div>
+        </div>
+        <div class="legend"><span class="lg"><span class="sw" style="background:var(--s1)"></span>Personas que se sumaron al mercado de trabajo</span><span class="lg"><span class="sw" style="background:var(--s2)"></span>Empleos destruidos</span></div>
+        <div class="eq"><span class="n">517 mil</span> nuevos desocupados</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tiles">
+    <button class="tile" data-go="trabajo:c-g2"><span class="lbl">Desocupación</span><span class="val"><span data-count="7.9" data-dec="1">7,9</span><small>% PEA</small></span><span class="delta bad">▲ +2,2 pp vs. 4T 2023</span><span class="ctx">1,8 millones de personas</span></button>
+    <button class="tile" data-go="trabajo:c-g4"><span class="lbl">Informalidad</span><span class="val"><span data-count="45" data-dec="0">45</span><small>% ocupados</small></span><span class="delta bad">▲ +3,6 pp · +638 mil</span><span class="ctx">≈ 10 millones sin derechos laborales</span></button>
+    <button class="tile" data-go="pobreza:c-g5"><span class="lbl">Pobreza · 1S 2026</span><span class="val"><span data-count="15" data-dec="0">15</span><small>millones</small></span><span class="delta bad">▲ +4,1 pp en el semestre</span><span class="ctx">+1,9 millones de personas</span></button>
+    <button class="tile" data-go="pobreza:c-g5"><span class="lbl">Indigencia · 1S 2026</span><span class="val"><span data-count="3.5" data-dec="1">3,5</span><small>millones</small></span><span class="delta bad">▲ +1,2 pp en el semestre</span><span class="ctx">+560 mil personas</span></button>
+    <button class="tile" data-go="distribucion:c-g11"><span class="lbl">Precios · 4T 2025 – 2T 2026</span><span class="val">+<span data-count="17.7" data-dec="1">17,7</span><small>%</small></span><span class="delta bad">▲ Alimentos +19,3%</span><span class="ctx">Por encima de todos los ingresos</span></button>
+    <button class="tile" data-go="distribucion:c-g11"><span class="lbl">Salario promedio (p21)</span><span class="val">+<span data-count="5.71" data-dec="2">5,71</span><small>%</small></span><span class="delta bad">▼ Todos pierden poder de compra</span><span class="ctx">Variación nominal, 4T 2025 – 2T 2026</span></button>
+  </div>
+
+  <div class="keys">
+    <div class="card key" style="margin:0">
+      <h3>Un deterioro que se acumula</h3>
+      <ul>
+        <li>Cae el empleo (<b>−276 mil puestos</b>) y avanzan el desempleo (<b>7,9%</b> de la PEA) y la informalidad (<b>45%</b> de los ocupados).</li>
+        <li>Crecen la pobreza (<b>+4,1 pp</b> en el semestre) y la indigencia (<b>+1,2 pp</b>).</li>
+        <li>La aceleración de la inflación golpea el consumo de los <b>deciles 1 y 2</b>: precios <b>+17,7%</b>, alimentos <b>+19,3%</b>. Todos los trabajadores perdieron poder de compra.</li>
+      </ul>
+    </div>
+    <div class="card key" style="margin:0">
+      <h3>Un modelo que no derrama</h3>
+      <ul>
+        <li>La <b>“ficticia estabilización financiera”</b> va en sentido inverso a la actividad económica.</li>
+        <li>Los sectores “ganadores” generan poco trabajo y no logran traccionar al conjunto de la economía.</li>
+        <li>Detrás está la hipótesis de <b>“ser como Perú”</b>: lógica extractivista, concentración de la riqueza y destrucción de sectores de alta empleabilidad, sostén de las amplias clases medias que distinguen a la Argentina en América Latina.</li>
+      </ul>
+      <div class="chips"><span class="chip">Agro</span><span class="chip">Minería</span><span class="chip">Finanzas</span><span class="chip">Energía</span></div>
+    </div>
+  </div>
+
+  <div class="route">
+    <a href="#trabajo"><span class="k">01</span><h4>Mundo del trabajo</h4><p>Tasas básicas, desempleo y subocupación, duración del desempleo y calidad del empleo.</p></a>
+    <a href="#pobreza"><span class="k">02</span><h4>Pobreza e indigencia</h4><p>Serie 1992–2026, intensidad, grupos de edad y una estimación corregida.</p></a>
+    <a href="#distribucion"><span class="k">03</span><h4>Distribución del ingreso</h4><p>Gini, brecha entre deciles, ingresos y salarios por decil, inflación y AUH.</p></a>
+  </div>
+</section>
+
+<!-- ===================== TRABAJO ===================== -->
+<section id="sec-trabajo" hidden>
+  <div class="sec-head">
+    <span class="kicker">1 · Situación del mundo del trabajo</span>
+    <h2>Más personas quieren trabajar y hay menos empleo</h2>
+    <p>Entre el 4T 2023 y el 2T 2026 la participación laboral subió levemente mientras la tasa de empleo cayó. Crecen el desempleo, la subocupación y la informalidad.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><span class="lbl">Tasa de actividad</span><span class="val"><span data-count="48.9" data-dec="1">48,9</span><small>%</small></span><span class="delta flat">▲ +0,3 pp</span><span class="ctx">+241 mil personas en el mercado</span></div>
+    <div class="tile"><span class="lbl">Tasa de empleo</span><span class="val"><span data-count="45" data-dec="1">45,0</span><small>%</small></span><span class="delta bad">▼ −0,8 pp</span><span class="ctx">−276 mil empleos</span></div>
+    <div class="tile"><span class="lbl">Desocupación</span><span class="val"><span data-count="7.9" data-dec="1">7,9</span><small>%</small></span><span class="delta bad">▲ +2,2 pp</span><span class="ctx">1,8 millones de personas</span></div>
+    <div class="tile"><span class="lbl">Subocupación</span><span class="val"><span data-count="11.5" data-dec="1">11,5</span><small>%</small></span><span class="delta bad">▲ +1,0 pp</span><span class="ctx">2,6 millones de personas</span></div>
+    <div class="tile"><span class="lbl">Informalidad</span><span class="val"><span data-count="45" data-dec="1">45,0</span><small>%</small></span><span class="delta bad">▲ +3,6 pp</span><span class="ctx">+638 mil trabajadores</span></div>
+  </div>
+  <p class="cap" style="margin:-8px 0 18px">Variaciones: 2T 2026 frente a 4T 2023.</p>
+
+  <div class="grid2" style="margin-bottom:18px">
+    <figure class="card" id="c-g1" data-chart-id="g1" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G1</span>Tasas de actividad y de empleo</h3><div class="sub">% de la población · 4T 2023 – 2T 2026</div></div>
+        <div class="tools"><button class="tbtn" data-for="g1" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="find">La actividad sube <b>+0,3 pp</b> y el empleo cae <b>−0,8 pp</b>: <b>241 mil</b> personas más en el mercado de trabajo y <b>276 mil</b> empleos menos.</p>
+    </figure>
+    <figure class="card" id="c-g2" data-chart-id="g2" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G2</span>Desocupación y subocupación</h3><div class="sub">% de la PEA · 4T 2023 – 2T 2026</div></div>
+        <div class="tools"><div class="seg" data-key="g2"><button data-val="sep" aria-pressed="true">Por separado</button><button data-val="sum" aria-pressed="false">Sumadas</button></div><button class="tbtn" data-for="g2" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="find" data-show-g2="sep">La desocupación pasa de <b>5,7%</b> a <b>7,9%</b> (+2,2 pp): <b>1,8 millones</b> de desocupados.</p>
+      <p class="find" data-show-g2="sum" hidden>Con los subocupados, el aumento es de <b>+3,2 pp</b>: <b>769 mil</b> nuevos desocupados y subocupados.</p>
+    </figure>
+  </div>
+
+  <div class="card">
+    <div class="chart-h"><div><h3>Subutilización laboral</h3><div class="sub">Personas que trabajan menos de lo que desean · 2T 2026</div></div></div>
+    <div class="eq"><span class="n">1,8 M</span> desocupados <span class="op">+</span> <span class="n">2,6 M</span> subocupados <span class="op">=</span> <span class="n">4,4 M</span> personas · ≈ 19,3% de la PEA</div>
+    <div class="segbar" role="img" aria-label="4,4 millones: 1,8 millones de desocupados y 2,6 millones de subocupados">
+      <div style="flex:1.8;background:var(--s1);color:#fff">1,8 M desocupados</div>
+      <div style="flex:2.6;background:var(--s2);color:#fff">2,6 M subocupados</div>
+    </div>
+    <p class="cap">Sin contar a quienes están fuera de la fuerza laboral y podrían querer participar si se les ofreciera un empleo.</p>
+  </div>
+
+  <div class="grid-3-2" style="margin-bottom:18px">
+    <figure class="card" id="c-g3" data-chart-id="g3">
+      <div class="chart-h"><div><h3><span class="gnum">G3</span>Duración del desempleo</h3><div class="sub">% de los desocupados según tiempo de búsqueda</div></div>
+        <div class="tools"><button class="tbtn" data-for="g3" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+    </figure>
+    <figure class="card" id="c-g3b" data-chart-id="g3b">
+      <div class="chart-h"><div><h3>Cambio en la composición</h3><div class="sub">Puntos porcentuales · 2T 2026 vs. 4T 2023</div></div></div>
+      <div class="plot"></div>
+      <p class="find">Baja el peso de quienes buscan hace <b>más de un año</b> (−1,8 pp) y de <b>menos de un mes</b> (−0,5 pp). Pero en números absolutos hay <b>136 mil desocupados de largo plazo más</b>.</p>
+    </figure>
+  </div>
+
+  <figure class="card" id="c-g4" data-chart-id="g4">
+    <div class="chart-h"><div><h3><span class="gnum">G4</span>No registrados, no asalariados e informales</h3><div class="sub">% · 4T 2023 – 2T 2026</div></div>
+      <div class="tools"><button class="tbtn" data-for="g4" aria-pressed="false">Ver tabla</button></div></div>
+    <div class="legend"></div><div class="plot"></div>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <p class="find" style="margin:0">Suben los no registrados (<b>+2,2 pp</b>), los no asalariados (<b>+3,2 pp</b>) y los informales (<b>+3,6 pp</b>): <b>638 mil</b> trabajadores más en la informalidad.</p>
+      </div>
+      <div>
+        <div style="font-size:13px;color:var(--ink2)"><b style="color:var(--ink);font-size:20px">≈ 10 millones</b> de personas en la informalidad: casi la mitad de quienes trabajan no tiene derechos laborales.</div>
+        <div class="meter" role="img" aria-label="45% de los ocupados son informales"><span style="width:45%"></span></div>
+        <div class="cap" style="margin:0">45% informales · 55% formales (2T 2026)</div>
+      </div>
+    </div>
+  </figure>
+
+  <div class="next"><a href="#resumen">← Resumen</a><a href="#pobreza">2 · Pobreza e indigencia →</a></div>
+</section>
+
+<!-- ===================== POBREZA ===================== -->
+<section id="sec-pobreza" hidden>
+  <div class="sec-head">
+    <span class="kicker">2 · Pobreza e indigencia</span>
+    <h2>1,9 millones de personas entraron a la pobreza en un semestre</h2>
+    <p>En el primer semestre de 2026, frente al segundo de 2025, aumentan la pobreza y la indigencia en todos los grupos de edad, con los mayores saltos relativos entre las personas de 65 años y más.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><span class="lbl">Personas pobres</span><span class="val"><span data-count="15" data-dec="1">15,0</span><small>M</small></span><span class="delta bad">▲ +4,1 pp</span><span class="ctx">Antes: 13,1 M (2S 2025)</span></div>
+    <div class="tile"><span class="lbl">Personas indigentes</span><span class="val"><span data-count="3.5" data-dec="1">3,5</span><small>M</small></span><span class="delta bad">▲ +1,2 pp</span><span class="ctx">Antes: 2,9 M · +560 mil</span></div>
+    <div class="tile"><span class="lbl">Intensidad de la pobreza</span><span class="val"><span data-count="35.9" data-dec="1">35,9</span><small>%</small></span><span class="delta bad">▲ +0,2 pp</span><span class="ctx">Hogares más lejos de salir</span></div>
+    <div class="tile"><span class="lbl">Intensidad de la indigencia</span><span class="val"><span data-count="33.9" data-dec="1">33,9</span><small>%</small></span><span class="delta flat">= sin cambios</span><span class="ctx">Igual que en 2S 2025</span></div>
+    <div class="tile"><span class="lbl">Pobreza en 65 años y más</span><span class="val"><span data-count="14.8" data-dec="1">14,8</span><small>%</small></span><span class="delta bad">▲ +5,1 pp (+53%)</span><span class="ctx">El mayor aumento por edad</span></div>
+  </div>
+
+  <figure class="card" id="c-g5" data-chart-id="g5">
+    <div class="chart-h"><div><h3><span class="gnum">G5</span>Pobreza e indigencia en perspectiva histórica</h3><div class="sub">% de personas · 1992 – 1S 2026</div></div>
+      <div class="tools"><div class="seg" data-key="g5"><button data-val="all" aria-pressed="true">1992–2026</button><button data-val="2015" aria-pressed="false">Desde 2015</button><button data-val="2023" aria-pressed="false">Desde 2023</button></div><button class="tbtn" data-for="g5" aria-pressed="false">Ver tabla</button></div></div>
+    <div class="legend"></div><div class="plot"></div>
+    <p class="find">Pobreza: <b>13,1 M → 15,0 M</b> personas (+4,1 pp). Indigencia: <b>2,9 M → 3,5 M</b> (+1,2 pp).</p>
+    <p class="cap"><span class="approx">≈</span>El gráfico original no rotula valores: la serie se reconstruyó leyendo el gráfico (margen aproximado ±1 pp). Los dos últimos semestres se anclan en las variaciones que informa el texto.</p>
+  </figure>
+
+  <div class="grid2" style="margin-bottom:18px">
+    <figure class="card" id="c-g6" data-chart-id="g6" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G6</span>Intensidad de la indigencia y la pobreza</h3><div class="sub">Hogares · % · 1S 2015 – 1S 2026</div></div>
+        <div class="tools"><button class="tbtn" data-for="g6" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="find">La intensidad de la indigencia no cambia (<b>33,9%</b>); la de la pobreza sube <b>+0,2 pp</b> (35,7% → 35,9%): los hogares pobres están algo más lejos de salir de esa situación.</p>
+    </figure>
+    <div class="note" style="align-self:start">
+      <b>¿Qué mide la intensidad?</b><br>Indica cuán lejos están, en promedio, los ingresos de los hogares pobres (o indigentes) de la línea que les permitiría dejar de serlo. Un valor más alto significa que necesitan más ingresos para salir de esa situación.
+    </div>
+  </div>
+
+  <div class="grid-3-2" style="margin-bottom:18px">
+    <figure class="card" id="c-g7" data-chart-id="g7">
+      <div class="chart-h"><div><h3><span class="gnum" data-show-edad="pob">G7</span><span class="gnum" data-show-edad="ind" hidden>G8</span>Por grupo de edad</h3><div class="sub">% de personas · 1S 2015 – 1S 2026</div></div>
+        <div class="tools"><div class="seg" data-key="edad"><button data-val="pob" aria-pressed="true">Pobreza</button><button data-val="ind" aria-pressed="false">Indigencia</button></div><button class="tbtn" data-for="g7" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="cap" data-show-edad="pob"><span class="approx">≈</span>Valores intermedios leídos del gráfico; 1S 2024 y 1S 2026 están rotulados en el original.</p>
+      <p class="cap" data-show-edad="ind" hidden>Valores rotulados en el original, salvo 0-14 en 2S 2025 (derivado del texto) y 65+ en 1S 2017 y 2S 2018 (≈).</p>
+    </figure>
+    <figure class="card" id="c-g7b" data-chart-id="g7b">
+      <div class="chart-h"><div><h3>Último semestre</h3><div class="sub">Variación 2S 2025 → 1S 2026, en pp</div></div></div>
+      <div class="plot"></div>
+      <p class="find" data-show-edad="pob">Todos los grupos empeoran. Se destaca <b>65 años y más</b>: <b>+5,1 pp</b>, un aumento del <b>53%</b>.</p>
+      <p class="find" data-show-edad="ind" hidden>El mayor aumento absoluto es en <b>0 a 14 años</b> (<b>+2,2 pp</b>); el mayor relativo, en <b>65 y más</b> (<b>+57%</b>).</p>
+    </figure>
+  </div>
+
+  <figure class="card" id="c-g9" data-chart-id="g9">
+    <div class="chart-h"><div><h3><span class="gnum">G9</span>Estimación oficial y corregida</h3><div class="sub">% de personas · corrigiendo limitaciones de la EPH y del IPC</div></div>
+      <div class="tools"><div class="seg" data-key="g9"><button data-val="pob" aria-pressed="true">Pobreza</button><button data-val="ind" aria-pressed="false">Indigencia</button></div><button class="tbtn" data-for="g9" aria-pressed="false">Ver tabla</button></div></div>
+    <div class="legend"></div><div class="plot"></div>
+    <div class="grid2" style="margin-top:12px">
+      <p class="find" style="margin:0">Con las correcciones, la pobreza es <b>superior a la de 2023:3</b>: <b>+3,8 pp</b>, o <b>1,8 millones</b> de pobres más (40,3% → 44,1%). La baja de la indigencia es menos pronunciada: <b>−1,3 pp</b>, 590 mil indigentes menos.</p>
+      <div class="note"><b>Aclaración metodológica.</b> El coeficiente de Engel de la ENGHo 2017/18 es sustancialmente menor que el que se usa hoy (ENGHo 2004/05). Como la línea de pobreza se obtiene multiplicando la de indigencia por la inversa de ese coeficiente, la pobreza queda subestimada. Además, las encuestas de hogares subdeclaran ingresos: aquí los salarios de la EPH se corrigen a partir de la CGI.</div>
+    </div>
+  </figure>
+
+  <div class="next"><a href="#trabajo">← 1 · Trabajo</a><a href="#distribucion">3 · Distribución del ingreso →</a></div>
+</section>
+
+<!-- ===================== DISTRIBUCIÓN ===================== -->
+<section id="sec-distribucion" hidden>
+  <div class="sec-head">
+    <span class="kicker">3 · Distribución del ingreso</span>
+    <h2>Todos los ingresos corrieron detrás de los precios</h2>
+    <p>Entre el 4T 2025 y el 2T 2026 la desigualdad aumentó levemente y ningún decil logró que sus ingresos acompañaran la suba de precios (+17,7%) ni la de los alimentos (+19,3%).</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><span class="lbl">Coeficiente de Gini (IPCF)</span><span class="val"><span data-count="0.428" data-dec="3">0,428</span></span><span class="delta bad">▲ +0,2%</span><span class="ctx">Más desigualdad</span></div>
+    <div class="tile"><span class="lbl">Brecha D10 / D1</span><span class="val"><span data-count="18" data-dec="0">18</span><small>veces</small></span><span class="delta flat">= sin cambios</span><span class="ctx">Igual que en 4T 2025</span></div>
+    <div class="tile"><span class="lbl">IPCF promedio</span><span class="val">+<span data-count="8.25" data-dec="2">8,25</span><small>%</small></span><span class="delta bad">▼ 9,5 pp bajo los precios</span><span class="ctx">Variación nominal</span></div>
+    <div class="tile"><span class="lbl">Salario promedio (p21)</span><span class="val">+<span data-count="5.71" data-dec="2">5,71</span><small>%</small></span><span class="delta bad">▼ 12,0 pp bajo los precios</span><span class="ctx">Variación nominal</span></div>
+    <div class="tile"><span class="lbl">Precios / alimentos</span><span class="val">+17,7<small>% / +19,3%</small></span><span class="delta bad">▲ Inflación en aceleración</span><span class="ctx">4T 2025 – 2T 2026</span></div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:18px">
+    <figure class="card" id="c-g10a" data-chart-id="g10a" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G10</span>Coeficiente de Gini del IPCF</h3><div class="sub">0 = igualdad total · 1 = desigualdad total</div></div>
+        <div class="tools"><button class="tbtn" data-for="g10a" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="find">Sube de <b>0,427</b> a <b>0,428</b> (+0,2%): aumentó la desigualdad en la distribución de los ingresos.</p>
+    </figure>
+    <figure class="card" id="c-g10b" data-chart-id="g10b" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G10</span>Brecha entre deciles extremos</h3><div class="sub">Ingreso del decil 10 / ingreso del decil 1 (veces)</div></div>
+        <div class="tools"><button class="tbtn" data-for="g10b" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+      <p class="find">Se mantiene en <b>18 veces</b>: D1 y D10 aumentaron en cuantías similares. El Gini, más sensible a los cambios en torno a la moda, capta el leve aumento.</p>
+    </figure>
+  </div>
+
+  <figure class="card" id="c-g11" data-chart-id="g11">
+    <div class="chart-h"><div><h3><span class="gnum">G11</span>Variación del ingreso por decil</h3><div class="sub">4T 2025 – 2T 2026 · IPCF y salario de la ocupación principal</div></div>
+      <div class="tools"><div class="seg" data-key="dec"><button data-val="nom" aria-pressed="true">Nominal</button><button data-val="real" aria-pressed="false">Real (descontando precios)</button></div><button class="tbtn" data-for="g11" aria-pressed="false">Ver tabla</button></div></div>
+    <div class="legend"></div><div class="plot"></div>
+    <p class="find" data-show-dec="nom">Ningún decil se acerca a la suba de precios. El IPCF crece por encima del promedio en los deciles <b>3 al 5, 7 y 8</b>; los salarios, en los deciles <b>3 al 8</b>. El decil 1 cae incluso en términos nominales (<b>−1,6%</b>).</p>
+    <p class="find" data-show-dec="real" hidden>Descontada la suba de precios, <b>todos los deciles pierden</b>: el salario promedio cae ≈ 10%, y el del decil 1, ≈ 16%.</p>
+    <p class="cap" data-show-dec="real" hidden>Vista “Real”: cálculo derivado de los datos del informe, deflactando cada variación nominal por la suba del nivel general de precios (+17,7%). No figura en el original.</p>
+  </figure>
+
+  <div class="card" id="c-cuadro">
+    <div class="chart-h"><div><h3 id="cuadro-title">Cuadro 1</h3><div class="sub">Valores nominales en pesos · IV 2025 y II 2026</div></div>
+      <div class="tools"><div class="seg" data-key="cuadro"><button data-val="ipcf" aria-pressed="true">IPCF (Cuadro 1)</button><button data-val="sal" aria-pressed="false">Salarios p21 (Cuadro 2)</button></div></div></div>
+    <div class="tbl-wrap" id="cuadro"></div>
+    <p class="cap">“Frente a precios”: diferencia entre la variación nominal y la suba del nivel general de precios (+17,7%), en puntos porcentuales.</p>
+  </div>
+
+  <div class="sec-head" style="margin-top:30px">
+    <span class="kicker">3.4 · Inflación, pobreza y poder de compra</span>
+    <h2 style="font-size:24px">La inflación vuelve a explicar la pobreza</h2>
+    <p>El aumento de la indigencia y la pobreza se explica principalmente por la aceleración de la inflación. En el último semestre, las canastas subieron incluso más que el IPC, lo contrario de lo que venía ocurriendo desde mediados de 2024.</p>
+  </div>
+  <div class="card" id="c-g12c" data-chart-id="g12c">
+    <div class="chart-h"><div><h3>Aumento semestral de precios y canastas</h3><div class="sub">% · último semestre</div></div></div>
+    <div class="plot"></div>
+    <p class="find">La Canasta Básica Alimentaria (<b>+21,4%</b>) y la Total (<b>+19,6%</b>) subieron más que el IPC (<b>+17,2%</b>): los hogares de menores ingresos enfrentan una inflación más alta que el promedio.</p>
+  </div>
+  <div class="grid2" style="margin-bottom:18px">
+    <figure class="card" id="c-g12a" data-chart-id="g12a" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G12</span>Indigencia y pobreza</h3><div class="sub">% de personas · 2S 2023 – 1S 2026</div></div>
+        <div class="tools"><button class="tbtn" data-for="g12a" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+    </figure>
+    <figure class="card" id="c-g12b" data-chart-id="g12b" style="margin:0">
+      <div class="chart-h"><div><h3><span class="gnum">G12</span>Inflación (PC)</h3><div class="sub">% · 2S 2023 – 1S 2026</div></div>
+        <div class="tools"><button class="tbtn" data-for="g12b" aria-pressed="false">Ver tabla</button></div></div>
+      <div class="legend"></div><div class="plot"></div>
+    </figure>
+  </div>
+  <p class="cap" style="margin:-8px 0 18px"><span class="approx">≈</span>En el informe, G12 combina ambas series en un gráfico de doble eje; aquí se separan para que la escala de una no distorsione la lectura de la otra. Valores reconstruidos del gráfico; el 17,2% de 1S 2026 es el IPC semestral que informa el texto.</p>
+
+  <figure class="card" id="c-g13" data-chart-id="g13">
+    <div class="chart-h"><div><h3><span class="gnum">G13</span>Poder de compra de la AUH en canastas</h3><div class="sub">Índice 2S 2023 = 100 · AUH medida en CBA y en CBT</div></div>
+      <div class="tools"><button class="tbtn" data-for="g13" aria-pressed="false">Ver tabla</button></div></div>
+    <div class="legend"></div><div class="plot"></div>
+    <div class="grid2" style="margin-top:12px">
+      <p class="find" style="margin:0">Con la aceleración de la inflación, los ingresos indexados pierden poder de compra: la AUH retrocede en términos de ambas canastas en el último semestre.</p>
+      <div class="note">Los recortes de pagos en especie (alimentos en comedores, medicamentos a jubilados, etc.) <b>no se reflejan</b> en estos indicadores, que se basan en ingresos: el informe lo señala como una limitación de las mediciones.</div>
+    </div>
+    <p class="cap"><span class="approx">≈</span>Valores leídos del gráfico original, que no los rotula.</p>
+  </figure>
+
+  <div class="next"><a href="#pobreza">← 2 · Pobreza e indigencia</a><a href="#conclusiones">4 · Conclusiones →</a></div>
+</section>
+
+<!-- ===================== CONCLUSIONES ===================== -->
+<section id="sec-conclusiones" hidden>
+  <div class="sec-head">
+    <span class="kicker">4 · Conclusiones</span>
+    <h2>Nada indica que la tendencia pueda revertirse</h2>
+  </div>
+  <div class="keys">
+    <div class="card key" style="margin:0">
+      <h3>Mercado de trabajo</h3>
+      <p class="quote">Más personas quieren trabajar y hay menos empleo.</p>
+      <p class="concl">La tasa de participación aumentó levemente respecto de fines de 2023, mientras que la de empleo está <b>0,8 pp por debajo</b>. Hay subutilización laboral: <b>4,4 millones</b> de personas trabajan menos tiempo del que desean.</p>
+      <div class="chips"><button class="chip" data-go="trabajo:c-g1">−276 mil empleos</button><button class="chip" data-go="trabajo:c-g2">517 mil nuevos desocupados</button><button class="chip" data-go="trabajo:c-g4">+638 mil informales</button></div>
+    </div>
+    <div class="card key" style="margin:0">
+      <h3>Pobreza y distribución</h3>
+      <p class="quote">La pobreza por ingresos sigue atada a los vaivenes de la lucha contra la inflación.</p>
+      <p class="concl">A tres años, la gestión no solo no redujo la pobreza sino que la agravó: según los cálculos del equipo, los indicadores empeoraron <b>4,1%</b> respecto de los del gobierno anterior. Se suman la pérdida de miles de puestos de trabajo, el avance de la desindustrialización y la recesión.</p>
+      <div class="chips"><button class="chip" data-go="pobreza:c-g5">15 M personas pobres</button><button class="chip" data-go="pobreza:c-g9">Pobreza corregida 44,1%</button><button class="chip" data-go="distribucion:c-g11">Salarios por debajo de los precios</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <p class="concl" style="margin:0">Para los autores, todas las señales apuntan a un <b>mayor deterioro social</b> en el corto y el mediano plazo: un modelo que privilegia sectores de baja generación de empleo (agro, minería, finanzas, energía) y erosiona las bases de una sociedad de clases medias amplias.</p>
+  </div>
+  <div class="next"><a href="#distribucion">← 3 · Distribución del ingreso</a><a href="#notas">Notas y fuentes →</a></div>
+</section>
+
+<!-- ===================== NOTAS ===================== -->
+<section id="sec-notas" hidden>
+  <div class="sec-head">
+    <span class="kicker">Notas y fuentes</span>
+    <h2>Cómo leer este tablero</h2>
+  </div>
+  <div class="keys">
+    <div class="card key" style="margin:0">
+      <h3>Origen de los datos</h3>
+      <ul>
+        <li>Todos los valores provienen del <b>Informe N° 4</b> de la serie <i>Economía de la Incertidumbre 2026</i> (Equipo CEC – Grupo Economía y Territorio, noviembre de 2026).</li>
+        <li>Los valores rotulados en los gráficos y cuadros del informe se transcriben tal cual.</li>
+        <li>Las series sin rótulos (<b>G5</b>, puntos intermedios de <b>G7</b>, <b>G12</b> y <b>G13</b>) se reconstruyeron leyendo los gráficos. Se marcan con <b>≈</b> y tienen un margen aproximado de ±1 pp (±5 puntos de índice en G13).</li>
+        <li>Las cifras en personas (241 mil, 276 mil, 517 mil, 15 M, etc.) son las que informa el texto.</li>
+      </ul>
+    </div>
+    <div class="card key" style="margin:0">
+      <h3>Decisiones de visualización</h3>
+      <ul>
+        <li><b>G12</b> usa doble eje en el original; aquí pobreza/indigencia e inflación van en dos gráficos con escalas propias.</li>
+        <li>La vista <b>“Real”</b> de G11 es un cálculo derivado: deflacta la variación nominal por el 17,7%.</li>
+        <li>El informe usa 17,7% (nivel general de precios, 4T 2025 – 2T 2026) al comparar ingresos y 17,2% (IPC semestral) al comparar con las canastas; cada cifra se muestra en su contexto.</li>
+        <li>En G9 se respeta la notación de períodos del informe (2023:3, 2024:1, …).</li>
+        <li>Pasá el cursor (o usá Tab y las flechas) sobre cualquier gráfico para ver los valores; “Ver tabla” muestra los datos completos.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:16px;margin-bottom:10px">Índice de gráficos y cuadros</h3>
+    <div class="tbl-wrap"><table class="data idx">
+      <thead><tr><th>Informe</th><th style="text-align:left">Contenido</th><th style="text-align:left">En el tablero</th></tr></thead>
+      <tbody>
+        <tr><td>Gráfico 1</td><td style="text-align:left">Tasas de actividad y de empleo</td><td style="text-align:left"><a href="#" data-go="trabajo:c-g1">1 · Trabajo</a></td></tr>
+        <tr><td>Gráfico 2</td><td style="text-align:left">Desocupación y subocupación</td><td style="text-align:left"><a href="#" data-go="trabajo:c-g2">1 · Trabajo</a></td></tr>
+        <tr><td>Gráfico 3</td><td style="text-align:left">Duración del desempleo</td><td style="text-align:left"><a href="#" data-go="trabajo:c-g3">1 · Trabajo</a></td></tr>
+        <tr><td>Gráfico 4</td><td style="text-align:left">No registrados, no asalariados e informales</td><td style="text-align:left"><a href="#" data-go="trabajo:c-g4">1 · Trabajo</a></td></tr>
+        <tr><td>Gráfico 5</td><td style="text-align:left">Pobreza e indigencia 1992 – 1S 2026</td><td style="text-align:left"><a href="#" data-go="pobreza:c-g5">2 · Pobreza</a></td></tr>
+        <tr><td>Gráfico 6</td><td style="text-align:left">Intensidad de la indigencia y la pobreza</td><td style="text-align:left"><a href="#" data-go="pobreza:c-g6">2 · Pobreza</a></td></tr>
+        <tr><td>Gráficos 7 y 8</td><td style="text-align:left">Pobreza e indigencia por edad</td><td style="text-align:left"><a href="#" data-go="pobreza:c-g7">2 · Pobreza</a></td></tr>
+        <tr><td>Gráfico 9</td><td style="text-align:left">Estimación oficial y corregida</td><td style="text-align:left"><a href="#" data-go="pobreza:c-g9">2 · Pobreza</a></td></tr>
+        <tr><td>Gráfico 10</td><td style="text-align:left">Gini y brecha D10/D1</td><td style="text-align:left"><a href="#" data-go="distribucion:c-g10a">3 · Distribución</a></td></tr>
+        <tr><td>Cuadros 1 y 2</td><td style="text-align:left">IPCF y salarios por decil</td><td style="text-align:left"><a href="#" data-go="distribucion:c-cuadro">3 · Distribución</a></td></tr>
+        <tr><td>Gráfico 11</td><td style="text-align:left">Variación nominal por decil</td><td style="text-align:left"><a href="#" data-go="distribucion:c-g11">3 · Distribución</a></td></tr>
+        <tr><td>Gráfico 12</td><td style="text-align:left">Indigencia, pobreza e inflación</td><td style="text-align:left"><a href="#" data-go="distribucion:c-g12a">3 · Distribución</a></td></tr>
+        <tr><td>Gráfico 13</td><td style="text-align:left">Poder de compra de la AUH</td><td style="text-align:left"><a href="#" data-go="distribucion:c-g13">3 · Distribución</a></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="next"><a href="#conclusiones">← 4 · Conclusiones</a><a href="#resumen">Volver al resumen ↺</a></div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Fuente: Equipo CEC – Grupo Economía y Territorio. Serie Economía de la Incertidumbre 2026, Informe N° 4, noviembre de 2026.</span>
+    <span>Desarrollado por: Cátedra Cooperativismo, experiencias asociativas y Trabajo Social. FSOC-UBA</span>
+  </div>
+</footer>
+<div id="tt" role="tooltip" hidden></div>
+<script>
+// Datos del Informe N° 4 · Serie Economía de la Incertidumbre 2026 (CEC – Grupo Economía y Territorio)
+// Valores con etiqueta en el original: transcriptos tal cual.
+// Series sin etiquetas (G5, G7 puntos intermedios, G12, G13): reconstruidas leyendo el gráfico (≈).
+const T = ['4T23','1T24','2T24','3T24','4T24','1T25','2T25','3T25','4T25','1T26','2T26'];
+const SEM21 = ['1S 2015','2S 2016','1S 2017','2S 2017','1S 2018','2S 2018','1S 2019','2S 2019','1S 2020','2S 2020','1S 2021','2S 2021','1S 2022','2S 2022','1S 2023','2S 2023','1S 2024','2S 2024','1S 2025','2S 2025','1S 2026'];
+const SEM6 = ['2S 2023','1S 2024','2S 2024','1S 2025','2S 2025','1S 2026'];
+
+const D = {
+  g1: { act: [48.6,48.0,48.5,48.3,48.8,48.2,48.1,48.6,48.6,48.6,48.9],
+        emp: [45.8,44.3,44.8,45.0,45.7,44.4,44.5,45.4,45.0,44.8,45.0] },
+  g2: { des: [5.7,7.7,7.6,6.9,6.4,7.9,7.6,6.6,7.5,7.8,7.9],
+        sub: [10.5,10.2,11.8,11.4,11.3,10.0,11.6,10.9,11.3,11.1,11.5] },
+  g3: [
+    { name: 'Menos de 1 mes',     v: [13.4,14.9,15.6,10.2,13.2,16.3,13.9,13.8,15.9,13.3,12.9] },
+    { name: '1 a 3 meses',        v: [25.4,30.3,27.4,24.9,25.0,26.0,26.0,22.5,24.6,26.3,26.9] },
+    { name: 'Más de 3 a 6 meses', v: [14.6,14.8,18.9,16.1,16.1,13.1,18.3,17.8,14.9,15.9,14.8] },
+    { name: 'Más de 6 a 12 meses',v: [13.8,11.7,11.9,14.2,18.2,12.4,13.2,17.0,13.7,12.7,14.5] },
+    { name: 'Más de 1 año',       v: [32.7,28.3,26.2,34.2,27.6,32.0,28.2,28.8,30.9,31.8,30.9] }
+  ],
+  g4: { inf: [41.4,40.8,41.5,42.6,42.0,42.0,43.2,43.3,43.0,44.2,45.0],
+        nreg:[35.7,35.7,36.4,36.7,36.1,36.3,37.7,36.7,36.3,37.9,37.9],
+        nasal:[26.3,25.3,26.2,26.9,27.7,27.3,27.6,28.1,28.5,28.2,29.5] },
+  g5: {
+    pob: [29.3,28.9,27.9,27.1,28.3,31.5,35.6,38.5,39.2,40.0,38.5,36.8,37.4,39.0,39.1,39.0,40.3,41.1,45.3,48.6,61.3,65.3,61.5,57.6,54.3,50.5,48.1,44.1,40.9,37.7,35.8,36.4,34.8,34.0,32.8,30.4,29.9,29.1,27.1,26.1,27.1,26.5,26.3,26.6,30.1,31.9,29.9,29.9,30.0,30.1,28.3,25.9,27.2,32.0,35.4,35.6,40.5,41.7,40.7,37.6,36.7,39.0,40.0,41.8,52.8,38.0,31.7,28.2,32.3],
+    ind: [5.7,5.8,6.4,6.3,5.3,4.9,6.7,7.9,8.8,8.5,7.5,7.5,7.3,8.3,8.7,8.3,8.9,10.1,12.1,15.6,24.7,27.1,24.9,20.2,18.6,15.1,13.1,11.9,10.7,9.3,9.3,9.4,9.3,8.1,7.3,7.5,7.7,7.2,6.7,5.7,6.5,6.1,5.3,6.3,7.3,6.8,6.3,6.1,6.1,6.2,6.2,4.9,4.9,6.5,7.7,8.3,10.3,10.5,10.5,8.5,8.7,8.1,9.3,11.7,18.0,8.3,7.0,6.3,7.5]
+  },
+  g6: { ind: [43.9,40.1,41.7,39.1,38.1,38.3,36.9,38.2,41.6,40.4,37.7,35.2,34.9,34.0,34.4,32.8,33.4,30.5,37.9,33.9,33.9],
+        pob: [37.1,37.0,37.7,35.5,36.2,38.9,39.3,39.8,41.2,41.9,40.0,36.9,37.2,36.5,37.8,39.2,42.6,37.0,37.0,35.7,35.9] },
+  // Pobreza por edad: puntos intermedios leídos del gráfico (≈); 1S 2024 y 1S 2026 rotulados en el original
+  g7: {
+    a: [44.3,45.7,42.4,39.6,41.4,46.8,52.4,52.4,56.3,57.6,54.4,51.4,50.9,54.2,56.2,58.5,66.1,52.4,45.4,41.3,44.5],
+    b: [34.7,36.1,34.7,31.4,33.4,38.6,42.3,42.7,49.4,49.1,48.4,44.2,43.3,44.9,46.7,47.4,60.7,45.0,37.0,32.6,36.9],
+    c: [25.5,25.8,24.3,21.0,23.3,27.5,30.4,30.6,36.3,37.1,36.2,32.6,32.1,35.0,35.4,37.0,48.6,34.2,27.8,24.6,28.8],
+    d: [8.0,7.5,6.5,6.4,7.0,9.0,10.4,11.4,11.4,11.9,13.8,13.0,12.4,14.5,13.2,17.7,29.7,16.5,10.9,9.7,14.8]
+  },
+  // Indigencia por edad: rotulada en el original salvo 0-14 2S 2025 (derivado del texto: +2,2 pp) y 65+ 1S 2017 / 2S 2018 (≈)
+  g8: {
+    a: [10.1,9.6,10.6,7.6,8.0,10.9,13.1,13.6,15.6,15.7,16.6,12.6,12.7,12.0,13.6,18.9,27.0,11.5,10.0,8.6,10.8],
+    b: [7.3,7.6,7.4,6.3,5.8,8.4,9.4,9.5,12.8,12.5,12.8,10.4,11.4,9.4,12.1,13.5,21.2,10.6,8.1,8.4,8.5],
+    c: [4.7,4.9,4.9,3.6,4.0,5.4,5.9,6.4,9.1,9.0,8.6,6.7,7.3,7.0,7.6,10.1,15.9,7.1,6.1,5.4,6.8],
+    d: [1.2,0.9,0.6,0.9,0.8,0.6,1.2,0.9,1.3,1.0,2.1,0.7,1.9,1.7,1.6,2.6,4.0,1.9,1.6,1.4,2.2]
+  },
+  g9: { labels: ['2023:3','2024:1','2024:3','2025:1','2025:3','2026:1'],
+        indOf: [10.3,20.6,9.4,7.1,6.4,6.6],
+        indSub:[6.3,11.5,5.9,5.7,4.7,5.0],
+        pobOf: [38.9,54.9,38.5,31.6,27.2,30.2],
+        pobEngel:[56.1,69.0,56.2,51.4,48.9,54.0],
+        pobEngelSub:[40.3,53.9,44.8,41.2,39.0,44.1] },
+  g10: { labels: ['4T23','2T24','4T24','2T25','4T25','2T26'],
+         gini: [0.435,0.436,0.430,0.424,0.427,0.428],
+         brecha: [18,19,17,18,18,18] },
+  c1: { // Cuadro 1. IPCF por decil, valores nominales
+    iv25: [117129,215534,283306,350498,416399,503025,612765,763182,1042459,2055992],
+    ii26: [124142,227465,309488,382359,453377,543105,665595,835034,1123414,2221170],
+    var:  [5.99,5.54,9.24,9.09,8.88,7.97,8.62,9.41,7.77,8.03],
+    prom: [635996,688496,8.25] },
+  c2: { // Cuadro 2. Ingreso de la ocupación principal (p21) por decil
+    iv25: [138693,325764,468661,636768,778355,923543,1048037,1314179,1694887,3358660],
+    ii26: [136480,337935,511223,675329,827837,977628,1151000,1423716,1790337,3466554],
+    var:  [-1.60,3.74,9.08,6.06,6.36,5.86,9.82,8.34,5.63,3.21],
+    prom: [1068540,1129527,5.71] },
+  // G12 (reconstruido ≈; en el original, gráfico de doble eje)
+  g12: { ind: [11.7,18.0,8.3,7.0,6.3,7.5], pob: [41.8,52.8,38.0,31.7,28.2,32.3], pc: [77,118,32,17,14,17.2] },
+  // G13 (reconstruido ≈), índice 2S 2023 = 100
+  g13: { cba: [100,118,190,199,204,195], cbt: [100,117,181,192,197,191] }
+};
+
+const G5LABELS = (() => { const a = []; for (let y = 1992; y <= 2026; y++) { a.push('1S ' + y); a.push('2S ' + y); } return a.slice(0, 69); })();
+
+// Motor de gráficos SVG liviano (sin dependencias)
+const SVGNS = 'http://www.w3.org/2000/svg';
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const nf = (v, d = 1) => Number(v).toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const pct = (v, d = 1) => nf(v, d) + '%';
+const sgn = (v, d = 1, u = ' pp') => (v > 0 ? '+' : v < 0 ? '−' : '±') + nf(Math.abs(v), d) + u;
+const money = v => '$ ' + Math.round(v).toLocaleString('es-AR');
+
+function svgEl(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function svgText(parent, x, y, str, o = {}) {
+  const t = svgEl('text', { x, y, 'text-anchor': o.anchor || 'start', class: o.cls || 'tick' }, parent);
+  if (o.fill) t.setAttribute('fill', o.fill);
+  if (o.weight) t.setAttribute('font-weight', o.weight);
+  if (o.size) t.setAttribute('font-size', o.size);
+  t.textContent = str;
+  return t;
+}
+function lum(hex) {
+  const h = hex.replace('#', '');
+  const c = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+const inkOn = hex => lum(hex) > 0.36 ? '#0b0b0b' : '#ffffff';
+
+/* ---------- tooltip ---------- */
+const TT = () => document.getElementById('tt');
+function showTT(html, cx, cy) {
+  const tt = TT(); tt.innerHTML = html; tt.hidden = false;
+  const r = tt.getBoundingClientRect();
+  let l = cx + 16, t = cy + 16;
+  if (l + r.width > innerWidth - 8) l = cx - r.width - 16;
+  if (t + r.height > innerHeight - 8) t = cy - r.height - 16;
+  tt.style.left = Math.max(8, l) + 'px'; tt.style.top = Math.max(8, t) + 'px';
+}
+function hideTT() { TT().hidden = true; }
+function ttHTML(title, rows, note) {
+  return `<div class="tt-t">${title}</div>` + rows.map(r =>
+    `<div class="tt-r"><span class="sw" style="background:${r.color}"></span><span class="tt-n">${r.name}</span><span class="tt-v">${r.value}</span></div>`).join('') +
+    (note ? `<div class="tt-note">${note}</div>` : '');
+}
+function localX(svg, e, W) { const r = svg.getBoundingClientRect(); return (e.clientX - r.left) * W / r.width; }
+
+function tickEvery(n, avail, minGap) { return Math.max(1, Math.ceil(n / Math.max(2, Math.floor(avail / minGap)))); }
+
+/* ---------- gráfico de líneas ---------- */
+function lineChart(host, cfg) {
+  host.innerHTML = '';
+  const W = Math.max(host.clientWidth, 260), H = cfg.height || 280;
+  const m = { t: cfg.top || 18, r: cfg.endLabels ? 52 : 16, b: 28, l: cfg.yW || 40 };
+  const n = cfg.labels.length, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': cfg.aria || '' }, host);
+  const X = i => m.l + (n === 1 ? iw / 2 : i * iw / (n - 1));
+  const Y = v => m.t + ih - (v - cfg.y.min) / (cfg.y.max - cfg.y.min) * ih;
+  const grid = cssv('--grid'), axis = cssv('--axis'), surf = cssv('--surface');
+  for (let t = cfg.y.min; t <= cfg.y.max + 1e-9; t += cfg.y.step) {
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: Math.abs(t - cfg.y.min) < 1e-9 ? axis : grid, 'stroke-width': 1 }, svg);
+    svgText(svg, m.l - 6, Y(t) + 4, cfg.y.fmt(t), { anchor: 'end' });
+  }
+  const k = tickEvery(n, iw, cfg.xGap || 54);
+  let lastX = -1e9;
+  for (let i = 0; i < n; i++) {
+    if (cfg.xLabel) {
+      const lab = cfg.xLabel(i); if (lab == null) continue;
+      if (X(i) - lastX < 34) continue;
+      svgText(svg, X(i), H - 8, lab, { anchor: 'middle' }); lastX = X(i); continue;
+    }
+    if ((n - 1 - i) % k !== 0) continue;
+    svgText(svg, X(i), H - 8, cfg.labels[i], { anchor: i === 0 && k > 1 ? 'start' : i === n - 1 && k > 1 ? 'end' : 'middle' });
+  }
+  (cfg.bands || []).forEach(b => {
+    svgEl('rect', { x: X(b.from), y: m.t, width: X(b.to) - X(b.from), height: ih, fill: cssv('--band') }, svg);
+  });
+  const series = cfg.series.map(s => ({ ...s, col: cssv(s.c) }));
+  series.forEach(s => {
+    let d = '';
+    s.values.forEach((v, i) => { if (v == null) return; d += (d ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); });
+    svgEl('path', { d, fill: 'none', stroke: s.col, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+  });
+  // marcadores
+  series.forEach(s => {
+    s.values.forEach((v, i) => {
+      if (v == null) return;
+      const show = cfg.markers || i === n - 1;
+      if (show) svgEl('circle', { cx: X(i), cy: Y(v), r: 4, fill: s.col, stroke: surf, 'stroke-width': 2 }, svg);
+      if (cfg.pointLabels && cfg.pointLabels(i, s)) svgText(svg, X(i), Y(v) - 10, cfg.y.tip(v), { anchor: 'middle', cls: 'vlab' });
+    });
+  });
+  (cfg.annotations || []).forEach(a => {
+    const s = series[a.s || 0], v = s.values[a.i];
+    svgText(svg, X(a.i) + (a.dx || 0), Y(v) - 12, a.text, { anchor: a.anchor || 'middle', cls: 'annot' });
+  });
+  // etiquetas finales (valor) con separación mínima
+  if (cfg.endLabels) {
+    const ends = series.map(s => ({ y: Y(s.values[n - 1]), v: s.values[n - 1] })).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 14) ends[i].y = ends[i - 1].y + 14;
+    ends.forEach(e => svgText(svg, X(n - 1) + 9, e.y + 4, cfg.y.tip(e.v), { cls: 'vlab' }));
+  }
+  // capa de interacción
+  const cross = svgEl('line', { y1: m.t, y2: m.t + ih, stroke: axis, 'stroke-width': 1, visibility: 'hidden' }, svg);
+  const dots = series.map(s => svgEl('circle', { r: 5, fill: s.col, stroke: surf, 'stroke-width': 2, visibility: 'hidden' }, svg));
+  const ov = svgEl('rect', { x: m.l - 8, y: 0, width: iw + 16, height: H, fill: 'transparent', tabindex: 0, class: 'hit', 'aria-label': (cfg.aria || 'Gráfico') + '. Usá las flechas para recorrer los valores.' }, svg);
+  let cur = n - 1;
+  const show = (i, cx, cy) => {
+    cur = i;
+    cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('visibility', 'visible');
+    series.forEach((s, j) => { const v = s.values[i]; if (v == null) { dots[j].setAttribute('visibility', 'hidden'); return; } dots[j].setAttribute('cx', X(i)); dots[j].setAttribute('cy', Y(v)); dots[j].setAttribute('visibility', 'visible'); });
+    const rows = series.map(s => ({ color: s.col, name: s.name, value: s.values[i] == null ? '—' : ((typeof s.approx === 'function' ? s.approx(i) : s.approx) ? '≈ ' : '') + cfg.y.tip(s.values[i]) }));
+    showTT(ttHTML(cfg.labels[i], rows, cfg.ttNote ? cfg.ttNote(i) : ''), cx, cy);
+  };
+  const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); hideTT(); };
+  ov.addEventListener('pointermove', e => { const x = localX(svg, e, W); const i = Math.max(0, Math.min(n - 1, Math.round((x - m.l) / (iw / Math.max(1, n - 1))))); show(i, e.clientX, e.clientY); });
+  ov.addEventListener('pointerleave', hide);
+  const fromKey = () => { const r = svg.getBoundingClientRect(); show(cur, r.left + X(cur) * r.width / W, r.top + m.t + 10); };
+  ov.addEventListener('focus', fromKey);
+  ov.addEventListener('blur', hide);
+  ov.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { cur = Math.min(n - 1, cur + 1); fromKey(); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { cur = Math.max(0, cur - 1); fromKey(); e.preventDefault(); }
+  });
+}
+
+/* ---------- barras agrupadas (admite negativos y líneas de referencia) ---------- */
+function barPath(x, y0, y1, w, r) {
+  // y0 = base (cuadrada), y1 = extremo (redondeado)
+  const h = Math.abs(y1 - y0); r = Math.min(r, w / 2, h);
+  if (y1 <= y0) return `M${x},${y0}V${y1 + r}Q${x},${y1} ${x + r},${y1}H${x + w - r}Q${x + w},${y1} ${x + w},${y1 + r}V${y0}Z`;
+  return `M${x},${y0}V${y1 - r}Q${x},${y1} ${x + r},${y1}H${x + w - r}Q${x + w},${y1} ${x + w},${y1 - r}V${y0}Z`;
+}
+function barChart(host, cfg) {
+  host.innerHTML = '';
+  const W = Math.max(host.clientWidth, 260), H = cfg.height || 280;
+  const m = { t: cfg.top || 22, r: cfg.refs && cfg.refs.length ? 16 : 12, b: 28, l: cfg.yW || 40 };
+  const n = cfg.labels.length, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': cfg.aria || '' }, host);
+  const Y = v => m.t + ih - (v - cfg.y.min) / (cfg.y.max - cfg.y.min) * ih;
+  const grid = cssv('--grid'), axis = cssv('--axis');
+  for (let t = cfg.y.min; t <= cfg.y.max + 1e-9; t += cfg.y.step) {
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: grid, 'stroke-width': 1 }, svg);
+    svgText(svg, m.l - 6, Y(t) + 4, cfg.y.fmt(t), { anchor: 'end' });
+  }
+  const base = Y(Math.max(cfg.y.min, Math.min(0, cfg.y.max)));
+  const band = iw / n, ns = cfg.series.length, gap = 2;
+  const bw = Math.min(cfg.barMax || 24, (band * 0.78 - gap * (ns - 1)) / ns);
+  const gw = bw * ns + gap * (ns - 1);
+  const series = cfg.series.map(s => ({ ...s, col: cssv(s.c) }));
+  const k = tickEvery(n, iw, cfg.xGap || 40);
+  for (let i = 0; i < n; i++) {
+    const cx = m.l + band * i + band / 2;
+    if ((n - 1 - i) % k === 0) svgText(svg, cx, H - 8, cfg.labels[i], { anchor: 'middle' });
+    series.forEach((s, j) => {
+      const v = s.values[i]; if (v == null) return;
+      const x = cx - gw / 2 + j * (bw + gap);
+      svgEl('path', { d: barPath(x, base, Y(v), bw, 4), fill: s.col }, svg);
+      if (cfg.valueLabels && cfg.valueLabels(i, j, v)) {
+        const ty = v >= 0 ? Y(v) - 6 : Y(v) + 14;
+        svgText(svg, x + bw / 2, ty, cfg.y.tip(v), { anchor: 'middle', cls: 'vlab' });
+      }
+    });
+  }
+  svgEl('line', { x1: m.l, x2: W - m.r, y1: base, y2: base, stroke: axis, 'stroke-width': 1 }, svg);
+  (cfg.refs || []).forEach(rf => {
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: Y(rf.value), y2: Y(rf.value), stroke: cssv(rf.c || '--ink2'), 'stroke-width': 1.25, 'stroke-dasharray': '5 4' }, svg);
+    const lbl = svgText(svg, rf.left ? m.l + 4 : W - m.r - 2, Y(rf.value) + (rf.below ? 13 : -5), rf.label, { anchor: rf.left ? 'start' : 'end', cls: 'reflab' });
+    lbl.setAttribute('paint-order', 'stroke'); lbl.setAttribute('stroke', cssv('--surface')); lbl.setAttribute('stroke-width', 4);
+  });
+  // capa de interacción por banda
+  for (let i = 0; i < n; i++) {
+    const hit = svgEl('rect', { x: m.l + band * i, y: 0, width: band, height: H, fill: 'transparent', tabindex: 0, class: 'hit', 'aria-label': cfg.labels[i] }, svg);
+    const html = () => ttHTML(cfg.labels[i], series.map(s => ({ color: s.col, name: s.name, value: s.values[i] == null ? '—' : ((typeof s.approx === 'function' ? s.approx(i) : s.approx) ? '≈ ' : '') + cfg.y.tip(s.values[i]) })), cfg.ttNote ? cfg.ttNote(i) : '');
+    hit.addEventListener('pointermove', e => { hit.classList.add('on'); showTT(html(), e.clientX, e.clientY); });
+    hit.addEventListener('pointerleave', () => { hit.classList.remove('on'); hideTT(); });
+    hit.addEventListener('focus', () => { const r = hit.getBoundingClientRect(); showTT(html(), r.left + r.width / 2, r.top + 30); });
+    hit.addEventListener('blur', hideTT);
+  }
+}
+
+/* ---------- barras horizontales (una serie, admite negativos) ---------- */
+function hbarChart(host, cfg) {
+  host.innerHTML = '';
+  const W = Math.max(host.clientWidth, 240), rowH = cfg.rowH || 34;
+  const n = cfg.labels.length, H = n * rowH + 26;
+  const m = { t: 6, r: 56, b: 20, l: cfg.labelW || 130 };
+  const iw = W - m.l - m.r;
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': cfg.aria || '' }, host);
+  const X = v => m.l + (v - cfg.x.min) / (cfg.x.max - cfg.x.min) * iw;
+  const grid = cssv('--grid'), axis = cssv('--axis');
+  for (let t = cfg.x.min; t <= cfg.x.max + 1e-9; t += cfg.x.step) {
+    svgEl('line', { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, stroke: grid, 'stroke-width': 1 }, svg);
+    svgText(svg, X(t), H - 4, cfg.x.fmt(t), { anchor: 'middle' });
+  }
+  const zero = X(Math.max(cfg.x.min, Math.min(0, cfg.x.max)));
+  const bh = Math.min(20, rowH - 10);
+  cfg.values.forEach((v, i) => {
+    const cy = m.t + i * rowH + rowH / 2;
+    svgText(svg, m.l - 10, cy + 4, cfg.labels[i], { anchor: 'end', cls: 'rowlab' });
+    const col = cssv(Array.isArray(cfg.c) ? cfg.c[i] : cfg.c);
+    // barra horizontal: base cuadrada en cero, extremo redondeado
+    const x1 = X(v), r = Math.min(4, bh / 2, Math.abs(x1 - zero));
+    let d;
+    if (x1 >= zero) d = `M${zero},${cy - bh / 2}H${x1 - r}Q${x1},${cy - bh / 2} ${x1},${cy - bh / 2 + r}V${cy + bh / 2 - r}Q${x1},${cy + bh / 2} ${x1 - r},${cy + bh / 2}H${zero}Z`;
+    else d = `M${zero},${cy - bh / 2}H${x1 + r}Q${x1},${cy - bh / 2} ${x1},${cy - bh / 2 + r}V${cy + bh / 2 - r}Q${x1},${cy + bh / 2} ${x1 + r},${cy + bh / 2}H${zero}Z`;
+    svgEl('path', { d, fill: col }, svg);
+    const tx = v >= 0 ? x1 + 6 : x1 - 6;
+    svgText(svg, tx, cy + 4, (cfg.approx && cfg.approx(i) ? '≈ ' : '') + cfg.x.tip(v), { anchor: v >= 0 ? 'start' : 'end', cls: 'vlab' });
+  });
+  svgEl('line', { x1: zero, x2: zero, y1: m.t, y2: H - m.b, stroke: axis, 'stroke-width': 1 }, svg);
+}
+
+/* ---------- columnas apiladas al 100% ---------- */
+function stackChart(host, cfg) {
+  host.innerHTML = '';
+  const W = Math.max(host.clientWidth, 260), H = cfg.height || 300;
+  const m = { t: 10, r: 10, b: 28, l: 40 };
+  const n = cfg.labels.length, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': cfg.aria || '' }, host);
+  const Y = v => m.t + ih - v / 100 * ih;
+  const grid = cssv('--grid'), surf = cssv('--surface');
+  for (let t = 0; t <= 100; t += 20) {
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: grid, 'stroke-width': 1 }, svg);
+    svgText(svg, m.l - 6, Y(t) + 4, t + '%', { anchor: 'end' });
+  }
+  const band = iw / n, bw = Math.min(cfg.barMax || 28, band * 0.7);
+  const series = cfg.series.map(s => ({ ...s, col: cssv(s.c) }));
+  const k = tickEvery(n, iw, 40);
+  for (let i = 0; i < n; i++) {
+    const cx = m.l + band * i + band / 2, x = cx - bw / 2;
+    if ((n - 1 - i) % k === 0) svgText(svg, cx, H - 8, cfg.labels[i], { anchor: 'middle' });
+    let acc = 0;
+    series.forEach((s, j) => {
+      const v = s.values[i]; const y0 = Y(acc), y1 = Y(acc + v); acc += v;
+      const top = j === series.length - 1;
+      const yb = y0 - (j === 0 ? 0 : 1), yt = y1 + (top ? 0 : 1);
+      if (yb - yt <= 0) return;
+      if (top) svgEl('path', { d: barPath(x, yb, yt, bw, 4), fill: s.col }, svg);
+      else svgEl('rect', { x, y: yt, width: bw, height: yb - yt, fill: s.col }, svg);
+    });
+  }
+  for (let i = 0; i < n; i++) {
+    const hit = svgEl('rect', { x: m.l + band * i, y: 0, width: band, height: H, fill: 'transparent', tabindex: 0, class: 'hit', 'aria-label': cfg.labels[i] }, svg);
+    const html = () => ttHTML(cfg.labels[i] + ' · % de los desocupados', series.slice().reverse().map(s => ({ color: s.col, name: s.name, value: pct(s.values[i]) })));
+    hit.addEventListener('pointermove', e => showTT(html(), e.clientX, e.clientY));
+    hit.addEventListener('pointerleave', hideTT);
+    hit.addEventListener('focus', () => { const r = hit.getBoundingClientRect(); showTT(html(), r.left + r.width / 2, r.top + 30); });
+    hit.addEventListener('blur', hideTT);
+  }
+}
+
+/* ---------- tabla equivalente ---------- */
+function tableView(host, cfg) {
+  const head = `<tr><th>${cfg.corner || 'Período'}</th>${cfg.series.map(s => `<th><span class="sw" style="background:${cssv(s.c)}"></span>${s.name}</th>`).join('')}</tr>`;
+  const rows = cfg.labels.map((l, i) => `<tr><td>${l}</td>${cfg.series.map(s => {
+    const v = s.values[i]; const ap = (typeof s.approx === 'function' ? s.approx(i) : s.approx);
+    return `<td>${v == null ? '—' : (ap ? '≈ ' : '') + cfg.fmt(v)}</td>`; }).join('')}</tr>`).join('');
+  host.innerHTML = `<div class="tbl-wrap"><table class="data">${head}${rows}</table></div>`;
+}
+
+/* ---------- estado ---------- */
+const S = { g2: 'sep', g5: 'all', edad: 'pob', g9: 'pob', dec: 'nom', cuadro: 'ipcf' };
+const TABLE = {};
+const pctT = v => nf(v, 0) + '%';
+const tip1 = v => pct(v, 1);
+const INF = 17.7, ALIM = 19.3;
+const semX = i => { const [s, y] = SEM21[i].split(' '); return s === '1S' && (+y) % 2 === 1 ? y : null; };
+const real = v => ((1 + v / 100) / (1 + INF / 100) - 1) * 100;
+
+const CHARTS = {
+  g1: { deps: [], build: () => ({ type: 'line', labels: T, height: 260, markers: true, endLabels: true,
+    aria: 'Tasas de actividad y de empleo, 4T 2023 a 2T 2026',
+    y: { min: 40, max: 52, step: 2, fmt: pctT, tip: tip1 },
+    series: [{ name: 'Tasa de actividad', c: '--s1', values: D.g1.act }, { name: 'Tasa de empleo', c: '--s2', values: D.g1.emp }] }) },
+
+  g2: { deps: ['g2'], build: () => S.g2 === 'sep' ? ({ type: 'line', labels: T, height: 260, markers: true, endLabels: true,
+    aria: 'Tasas de desocupación y subocupación',
+    y: { min: 0, max: 14, step: 2, fmt: pctT, tip: tip1 },
+    series: [{ name: 'Desocupación', c: '--s1', values: D.g2.des }, { name: 'Subocupación', c: '--s2', values: D.g2.sub }] })
+    : ({ type: 'line', labels: T, height: 260, markers: true, endLabels: true,
+    aria: 'Subutilización: desocupación más subocupación',
+    y: { min: 0, max: 24, step: 4, fmt: pctT, tip: tip1 },
+    ttNote: () => 'Suma de ambas tasas (% de la PEA)',
+    series: [{ name: 'Desocupación + subocupación', c: '--s3', values: D.g2.des.map((v, i) => +(v + D.g2.sub[i]).toFixed(1)) }] }) },
+
+  g3: { deps: [], build: () => ({ type: 'stack', labels: T, height: 300, aria: 'Duración del desempleo',
+    series: D.g3.map((s, i) => ({ name: s.name, c: '--o' + (i + 1), values: s.v })) }) },
+
+  g3b: { deps: [], noTable: true, build: () => ({ type: 'hbar', labels: D.g3.map(s => s.name), labelW: 140,
+    aria: 'Cambio en la composición entre 4T 2023 y 2T 2026',
+    values: D.g3.map(s => +(s.v[10] - s.v[0]).toFixed(1)), c: '--s1',
+    x: { min: -3, max: 2, step: 1, fmt: v => (v > 0 ? '+' : '') + nf(v, 0), tip: v => sgn(v) } }) },
+
+  g4: { deps: [], build: () => ({ type: 'line', labels: T, height: 280, markers: true, endLabels: true,
+    aria: 'No registrados, no asalariados e informales',
+    y: { min: 20, max: 50, step: 5, fmt: pctT, tip: tip1 },
+    series: [{ name: 'Informales / ocupados', c: '--s1', values: D.g4.inf }, { name: 'No registrados / asalariados', c: '--s2', values: D.g4.nreg }, { name: 'No asalariados / ocupados', c: '--s3', values: D.g4.nasal }] }) },
+
+  g5: { deps: ['g5'], build: () => {
+    const start = S.g5 === 'all' ? 0 : S.g5 === '2015' ? 46 : 62;
+    const sl = a => a.slice(start);
+    const ann = [];
+    if (start === 0) ann.push({ i: 21, text: 'Crisis 2001-02' });
+    ann.push({ i: 64 - start, text: '1S 2024', anchor: 'end', dx: -6 });
+    const xl = i => { const lab = G5LABELS[i + start]; if (start >= 62) return lab; const [s, y] = lab.split(' '); if (s !== '1S') return null; return (y - (start ? 2015 : 1992)) % (start ? 2 : 4) === 0 ? y : null; };
+    return { type: 'line', labels: sl(G5LABELS), height: 320, endLabels: true, markers: start >= 62, xGap: 62, xLabel: xl,
+      aria: 'Pobreza e indigencia, % de personas, 1992 a 1S 2026', annotations: ann,
+      y: { min: 0, max: 70, step: 10, fmt: pctT, tip: tip1 },
+      ttNote: i => (i + start) >= 67 ? 'Nivel anclado en la variación informada en el texto' : 'Valor aproximado, leído del gráfico original',
+      series: [{ name: 'Pobreza', c: '--s1', values: sl(D.g5.pob), approx: true }, { name: 'Indigencia', c: '--s2', values: sl(D.g5.ind), approx: true }] }; } },
+
+  g6: { deps: [], build: () => ({ type: 'line', labels: SEM21, height: 280, endLabels: true, xGap: 64, xLabel: semX,
+    aria: 'Intensidad de la indigencia y de la pobreza en hogares',
+    y: { min: 28, max: 46, step: 3, fmt: pctT, tip: tip1 },
+    series: [{ name: 'Intensidad de la pobreza', c: '--s1', values: D.g6.pob }, { name: 'Intensidad de la indigencia', c: '--s2', values: D.g6.ind }] }) },
+
+  g7: { deps: ['edad'], build: () => {
+    const p = S.edad === 'pob', src = p ? D.g7 : D.g8;
+    const ap = key => i => p ? !(i === 16 || i === 20 || (key === 'd' && i === 19)) : (key === 'd' && (i === 2 || i === 5));
+    return { type: 'line', labels: SEM21, height: 320, endLabels: true, xGap: 64, xLabel: semX,
+      aria: (p ? 'Pobreza' : 'Indigencia') + ' por grupo de edad',
+      y: p ? { min: 0, max: 70, step: 10, fmt: pctT, tip: tip1 } : { min: 0, max: 30, step: 5, fmt: pctT, tip: tip1 },
+      series: [{ name: '0 a 14 años', c: '--s1', values: src.a, approx: ap('a') }, { name: '15 a 29 años', c: '--s2', values: src.b, approx: ap('b') },
+               { name: '30 a 64 años', c: '--s3', values: src.c, approx: ap('c') }, { name: '65 años y más', c: '--s4', values: src.d, approx: ap('d') }] }; } },
+
+  g7b: { deps: ['edad'], noTable: true, build: () => {
+    const p = S.edad === 'pob', src = p ? D.g7 : D.g8;
+    const keys = ['a', 'b', 'c', 'd'];
+    return { type: 'hbar', labels: ['0 a 14', '15 a 29', '30 a 64', '65 y más'], labelW: 78, c: ['--s1', '--s2', '--s3', '--s4'],
+      aria: 'Variación entre 2S 2025 y 1S 2026 por grupo de edad',
+      values: keys.map(k => +(src[k][20] - src[k][19]).toFixed(1)),
+      approx: i => p && i < 3,
+      x: p ? { min: 0, max: 6, step: 2, fmt: v => '+' + nf(v, 0), tip: v => sgn(v) } : { min: 0, max: 3, step: 1, fmt: v => '+' + nf(v, 0), tip: v => sgn(v) } }; } },
+
+  g9: { deps: ['g9'], build: () => {
+    const p = S.g9 === 'pob';
+    return { type: 'bar', labels: D.g9.labels, height: 300, xGap: 50,
+      aria: 'Estimación oficial y corregida de ' + (p ? 'pobreza' : 'indigencia'),
+      y: p ? { min: 0, max: 80, step: 10, fmt: pctT, tip: tip1 } : { min: 0, max: 25, step: 5, fmt: pctT, tip: tip1 },
+      series: p ? [{ name: 'Pobreza oficial', c: '--s1', values: D.g9.pobOf }, { name: 'Corregida por coef. de Engel', c: '--s2', values: D.g9.pobEngel }, { name: 'Corregida por Engel + subdeclaración', c: '--s3', values: D.g9.pobEngelSub }]
+                : [{ name: 'Indigencia oficial', c: '--s1', values: D.g9.indOf }, { name: 'Corregida por subdeclaración', c: '--s3', values: D.g9.indSub }] }; } },
+
+  g10a: { deps: [], build: () => ({ type: 'line', labels: D.g10.labels, height: 220, markers: true, top: 26, yW: 46,
+    aria: 'Coeficiente de Gini del IPCF',
+    pointLabels: i => i === 1 || i === 3 || i === 5,
+    y: { min: 0.415, max: 0.440, step: 0.005, fmt: v => nf(v, 3), tip: v => nf(v, 3) },
+    series: [{ name: 'Coeficiente de Gini', c: '--s1', values: D.g10.gini }] }) },
+
+  g10b: { deps: [], build: () => ({ type: 'bar', labels: D.g10.labels, height: 220, barMax: 22, top: 22,
+    aria: 'Brecha entre deciles extremos D10/D1',
+    valueLabels: () => true,
+    y: { min: 0, max: 20, step: 5, fmt: v => nf(v, 0), tip: v => nf(v, 0) + '×' },
+    series: [{ name: 'Brecha D10/D1', c: '--s1', values: D.g10.brecha }] }) },
+
+  g11: { deps: ['dec'], build: () => {
+    const nom = S.dec === 'nom';
+    const a = nom ? D.c1.var : D.c1.var.map(real), b = nom ? D.c2.var : D.c2.var.map(real);
+    const pa = nom ? D.c1.prom[2] : real(D.c1.prom[2]), pb = nom ? D.c2.prom[2] : real(D.c2.prom[2]);
+    return { type: 'bar', labels: ['D1','D2','D3','D4','D5','D6','D7','D8','D9','D10'], height: 320, top: 24,
+      aria: 'Variación del IPCF y del salario por decil, 4T 2025 a 2T 2026',
+      y: nom ? { min: -4, max: 22, step: 2, fmt: v => nf(v, 0) + '%', tip: v => sgn(v, 2, '%') } : { min: -18, max: 0, step: 3, fmt: v => nf(v, 0) + '%', tip: v => sgn(v, 1, '%') },
+      ttNote: () => nom ? 'Precios: +17,7% · Alimentos: +19,3%' : 'Variación deflactada por el 17,7% de suba de precios',
+      refs: nom ? [{ value: ALIM, label: 'Alimentos +19,3%', c: '--crit' }, { value: INF, label: 'Nivel general de precios +17,7%', c: '--crit', below: true },
+                   { value: pa, label: '', c: '--s1' }, { value: pb, label: '', c: '--s2' }]
+                : [{ value: pa, label: '', c: '--s1' }, { value: pb, label: '', c: '--s2' }],
+      legendExtra: [{ dash: '--s1', name: 'Promedio IPCF ' + (nom ? '+8,25%' : sgn(pa, 1, '%')) }, { dash: '--s2', name: 'Promedio salarios ' + (nom ? '+5,71%' : sgn(pb, 1, '%')) }],
+      series: [{ name: 'Ingreso per cápita familiar (IPCF)', c: '--s1', values: a }, { name: 'Salario de la ocupación principal (p21)', c: '--s2', values: b }] }; } },
+
+  g12a: { deps: [], build: () => ({ type: 'line', labels: SEM6, height: 250, markers: true, endLabels: true,
+    aria: 'Pobreza e indigencia 2S 2023 a 1S 2026',
+    y: { min: 0, max: 60, step: 10, fmt: pctT, tip: tip1 },
+    series: [{ name: 'Pobreza (POB)', c: '--s1', values: D.g12.pob, approx: true }, { name: 'Indigencia (IND)', c: '--s2', values: D.g12.ind, approx: true }] }) },
+
+  g12b: { deps: [], build: () => ({ type: 'line', labels: SEM6, height: 250, markers: true, endLabels: true,
+    aria: 'Inflación (PC) 2S 2023 a 1S 2026',
+    y: { min: 0, max: 120, step: 20, fmt: pctT, tip: v => pct(v, v % 1 ? 1 : 0) },
+    series: [{ name: 'Inflación (PC)', c: '--s3', values: D.g12.pc, approx: i => i < 5 }] }) },
+
+  g12c: { deps: [], noTable: true, build: () => ({ type: 'hbar', labels: ['Canasta Básica Alimentaria (CBA)', 'Canasta Básica Total (CBT)', 'Índice de Precios (IPC)'], labelW: 200,
+    aria: 'Aumento semestral de canastas e IPC', c: '--s3', values: [21.4, 19.6, 17.2],
+    x: { min: 0, max: 25, step: 5, fmt: v => nf(v, 0) + '%', tip: v => '+' + pct(v) } }) },
+
+  g13: { deps: [], build: () => ({ type: 'line', labels: SEM6, height: 260, markers: true, endLabels: true,
+    aria: 'Poder de compra de la AUH en CBA y CBT',
+    y: { min: 80, max: 220, step: 20, fmt: v => nf(v, 0), tip: v => nf(v, 0) },
+    series: [{ name: 'AUH / CBA', c: '--s1', values: D.g13.cba, approx: i => i > 0 }, { name: 'AUH / CBT', c: '--s2', values: D.g13.cbt, approx: i => i > 0 }] }) }
+};
+
+/* ---------- render ---------- */
+function legendHTML(cfg) {
+  const items = [];
+  if (cfg.series && cfg.series.length >= 2) cfg.series.forEach(s => items.push(`<span class="lg"><span class="sw" style="background:${cssv(s.c)}"></span>${s.name}</span>`));
+  (cfg.legendExtra || []).forEach(x => items.push(`<span class="lg"><span class="dash" style="border-color:${cssv(x.dash)}"></span>${x.name}</span>`));
+  return items.join('');
+}
+function renderChart(id) {
+  const card = document.querySelector(`[data-chart-id="${id}"]`);
+  if (!card || !card.offsetParent) return;
+  const spec = CHARTS[id], cfg = spec.build();
+  const plot = card.querySelector('.plot'), lg = card.querySelector('.legend');
+  if (lg) lg.innerHTML = legendHTML(cfg);
+  if (TABLE[id]) {
+    const fmt = cfg.y ? cfg.y.tip : (cfg.x ? cfg.x.tip : v => v);
+    if (cfg.type === 'stack') return tableView(plot, { labels: cfg.labels, series: cfg.series, fmt: v => pct(v) });
+    return tableView(plot, { labels: cfg.labels, series: cfg.series, fmt, corner: id === 'g11' ? 'Decil' : 'Período' });
+  }
+  ({ line: lineChart, bar: barChart, stack: stackChart, hbar: hbarChart })[cfg.type](plot, cfg);
+}
+function renderCuadro() {
+  const host = document.getElementById('cuadro'); if (!host) return;
+  const c = S.cuadro === 'ipcf' ? D.c1 : D.c2;
+  const maxAbs = 10;
+  const rows = c.iv25.map((v, i) => {
+    const vr = c.var[i], gapv = vr - INF, w = Math.abs(vr) / maxAbs * 50;
+    const bar = `<span class="mini"><span class="mini-bar ${vr < 0 ? 'neg' : ''}" style="width:${w}%;${vr < 0 ? 'right:50%' : 'left:50%'}"></span></span>`;
+    return `<tr><td>${i + 1}</td><td>${money(v)}</td><td>${money(c.ii26[i])}</td><td class="vcell">${bar}<span>${sgn(vr, 2, '%')}</span></td><td class="neg-t">${sgn(gapv, 1)}</td></tr>`;
+  }).join('');
+  const prom = `<tr class="prom"><td>Promedio</td><td>${money(c.prom[0])}</td><td>${money(c.prom[1])}</td><td class="vcell"><span class="mini"></span><span>${sgn(c.prom[2], 2, '%')}</span></td><td class="neg-t">${sgn(c.prom[2] - INF, 1)}</td></tr>`;
+  host.innerHTML = `<table class="data cuadro"><thead><tr><th>Decil</th><th>IV 2025</th><th>II 2026</th><th>Variación nominal</th><th>Frente a precios (+17,7%)</th></tr></thead><tbody>${rows}${prom}</tbody></table>`;
+  document.getElementById('cuadro-title').textContent = S.cuadro === 'ipcf' ? 'Cuadro 1. Ingreso per cápita familiar (IPCF) por decil, valores nominales' : 'Cuadro 2. Ingreso de la ocupación principal (p21) por decil, valores nominales';
+}
+function renderVisible() {
+  Object.keys(CHARTS).forEach(renderChart);
+  renderCuadro();
+}
+
+/* ---------- navegación por secciones ---------- */
+const SECTIONS = ['resumen', 'trabajo', 'pobreza', 'distribucion', 'conclusiones', 'notas'];
+function go(id, focusEl) {
+  if (!SECTIONS.includes(id)) id = 'resumen';
+  document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== 'sec-' + id);
+  document.querySelectorAll('nav.tabs a').forEach(a => a.setAttribute('aria-current', a.dataset.sec === id ? 'page' : 'false'));
+  const idx = SECTIONS.indexOf(id);
+  document.getElementById('progress').style.width = ((idx + 1) / SECTIONS.length * 100) + '%';
+  renderVisible();
+  countUp(document.getElementById('sec-' + id));
+  if (focusEl) { const t = document.getElementById(focusEl); if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); t.classList.add('flash'); setTimeout(() => t.classList.remove('flash'), 1600); } }
+  else { const nav = document.querySelector('nav.tabs'); const top = document.querySelector('main').offsetTop - nav.offsetHeight - 8; if (scrollY > top) scrollTo(0, top); }
+}
+function route() { go((location.hash || '#resumen').slice(1)); }
+
+/* ---------- contadores ---------- */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function countUp(sec) {
+  sec.querySelectorAll('[data-count]:not(.done)').forEach(el => {
+    el.classList.add('done');
+    const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    if (reduce) { el.textContent = pre + nf(to, dec) + suf; return; }
+    const t0 = performance.now(), dur = 900;
+    const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = pre + nf(to * e, dec) + suf; if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ---------- tema: sigue la preferencia del dispositivo ---------- */
+function setTheme() { renderVisible(); }
+
+/* ---------- eventos ---------- */
+document.addEventListener('click', e => {
+  const seg = e.target.closest('.seg button');
+  if (seg) {
+    const key = seg.parentElement.dataset.key; S[key] = seg.dataset.val;
+    document.querySelectorAll(`.seg[data-key="${key}"] button`).forEach(b => b.setAttribute('aria-pressed', b.dataset.val === S[key]));
+    Object.keys(CHARTS).filter(id => CHARTS[id].deps.includes(key)).forEach(renderChart);
+    if (key === 'cuadro') renderCuadro();
+    document.querySelectorAll(`[data-show-${key}]`).forEach(el => el.hidden = el.getAttribute(`data-show-${key}`) !== S[key]);
+    return;
+  }
+  const tb = e.target.closest('.tbtn');
+  if (tb) { const id = tb.dataset.for; TABLE[id] = !TABLE[id]; tb.setAttribute('aria-pressed', TABLE[id]); tb.textContent = TABLE[id] ? 'Ver gráfico' : 'Ver tabla'; renderChart(id); return; }
+  const jump = e.target.closest('[data-go]');
+  if (jump) { e.preventDefault(); const [sec, target] = jump.dataset.go.split(':'); if (location.hash !== '#' + sec) history.replaceState(null, '', '#' + sec); go(sec, target); return; }
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setTheme);
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(renderVisible, 120); });
+addEventListener('hashchange', route);
+addEventListener('scroll', hideTT, { passive: true });
+
+try { localStorage.removeItem('ei4-theme'); } catch (e) {}
+route();
+
+</script>
+</body>
+</html>
